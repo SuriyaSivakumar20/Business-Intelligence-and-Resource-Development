@@ -1,128 +1,47 @@
 # AI-phishing-Detection
 # Chatbot Project
 
-Welcome to the **Chatbot Project**! Below is a demonstration of the chatbot in action.
+# 🤖 Chatbot Project: AI-Powered Conversational Assistant 💬
 
-## Animated Chatbot
+Building a smart and interactive chatbot that assists users with various queries and tasks using Natural Language Processing (NLP). 🤖✨
 
-```html
-<div id="chatbot-container">
-  <div id="chatbot-header">
-    <h3>Chatbot</h3>
-  </div>
-  <div id="chatbot-messages">
-    <div class="message bot-message">Hello! How can I assist you today?</div>
-  </div>
-  <input type="text" id="user-input" placeholder="Type your message..." />
-</div>
+---
 
-<style>
-  #chatbot-container {
-    width: 300px;
-    height: 400px;
-    border-radius: 10px;
-    background-color: #f4f4f4;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: fadeIn 1s ease-out;
-  }
+## 🌟 Features
+- 🔍 **Natural Language Processing**: Understands and responds to user queries in real-time.
+- 🌐 **Multi-Platform Integration**: Works across websites, mobile apps, and messaging platforms.
+- ⚡ **Fast Responses**: Optimized for quick and efficient communication.
+- 🤝 **User-Friendly Interface**: Easy-to-use chat interface with rich media support (images, links, etc.).
+- 🧠 **AI Learning**: Constantly improving answers through machine learning.
 
-  #chatbot-header {
-    background-color: #4CAF50;
-    padding: 10px;
-    text-align: center;
-    color: white;
-    font-size: 18px;
-  }
+---
 
-  #chatbot-messages {
-    flex-grow: 1;
-    padding: 10px;
-    overflow-y: auto;
-    background-color: #fff;
-    border-bottom: 2px solid #ddd;
-  }
+## 📸 Project Overview
+![Chatbot Animation](https://media.giphy.com/media/3o6Zt5zH6gU2fJ5v6k/giphy.gif)
 
-  .message {
-    padding: 8px;
-    margin-bottom: 5px;
-    border-radius: 5px;
-    font-size: 14px;
-    max-width: 70%;
-  }
+---
 
-  .bot-message {
-    background-color: #e1f5fe;
-    align-self: flex-start;
-    animation: slideInFromLeft 0.5s ease-out;
-  }
+## 🛠️ Tech Stack
+- **Programming Language**: ![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+- **Framework**: ![Flask](https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white) for web app development
+- **NLP Toolkit**: ![NLTK](https://img.shields.io/badge/NLTK-000000?style=flat&logo=nltk&logoColor=white)
+- **Machine Learning**: ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat&logo=tensorflow&logoColor=white)
+- **Frontend**: HTML, CSS, JavaScript
+- **Database**: SQLite for storing user queries and conversations
 
-  .user-message {
-    background-color: #dcedc8;
-    align-self: flex-end;
-    animation: slideInFromRight 0.5s ease-out;
-  }
+---
 
-  #user-input {
-    padding: 10px;
-    border: none;
-    border-top: 2px solid #ddd;
-    font-size: 14px;
-    outline: none;
-  }
+## 🎉 How It Works
+1. **User Interaction**: The user asks a question or gives a command.
+2. **Processing**: The chatbot uses NLP to understand and process the text.
+3. **Response Generation**: A relevant response is generated based on pre-trained models and contextual data.
+4. **Continuous Learning**: The chatbot improves over time by learning from more interactions.
 
-  #user-input:focus {
-    border-color: #4CAF50;
-  }
+---
 
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
+## 🚀 Quick Start
 
-  @keyframes slideInFromLeft {
-    from {
-      transform: translateX(-100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes slideInFromRight {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(0);
-    }
-  }
-</style>
-
-<script>
-  const userInput = document.getElementById('user-input');
-  const chatbotMessages = document.getElementById('chatbot-messages');
-
-  userInput.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter' && userInput.value.trim()) {
-      const userMessage = document.createElement('div');
-      userMessage.classList.add('message', 'user-message');
-      userMessage.textContent = userInput.value;
-      chatbotMessages.appendChild(userMessage);
-      userInput.value = '';
-
-      const botMessage = document.createElement('div');
-      botMessage.classList.add('message', 'bot-message');
-      botMessage.textContent = "I'm here to help you!";
-      chatbotMessages.appendChild(botMessage);
-
-      chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-    }
-  });
-</script>
+### Clone the Repository
+```bash
+git clone https://github.com/your-username/chatbot-project.git
+cd chatbot-project
