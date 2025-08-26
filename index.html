@@ -1,154 +1,426 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B.I.R.D</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>B.I.R.D. - Business Intelligence & Resource Development</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.5.0/echarts.min.js"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: { primary: "#4F46E5", secondary: "#6366F1" },
+            borderRadius: {
+              none: "0px", sm: "4px", DEFAULT: "8px", md: "12px", lg: "16px",
+              xl: "20px", "2xl": "24px", "3xl": "32px", full: "9999px", button: "8px",
+            },
+          },
+        },
+      };
+    </script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #2c2f33;
-            color: #fff;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .chat-container {
-            background-color: #23272a;
-            border-radius: 10px;
-            width: 60%;
-            height: 80%;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        .chat-header {
-            background-color: #7289da;
-            padding: 10px;
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .chat-box {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background-color: #2c2f33;
-        }
-        .chat-box .message {
-            margin: 10px 0;
-        }
-        .message.user {
-            text-align: right;
-        }
-        .message.bot {
-            text-align: left;
-        }
-        .input-box {
-            display: flex;
-            padding: 10px;
-            background-color: #23272a;
-        }
-        .input-box input {
-            flex-grow: 1;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        .input-box button {
-            background-color: #7289da;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+      .typing-animation::after { content: '|'; animation: blink 1s infinite; }
+      @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+      .gradient-bg { background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); }
+      .chat-window { transform: translateY(100%); transition: transform 0.3s ease-in-out; }
+      .chat-window.active { transform: translateY(0); height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; z-index: 1000; border-radius: 0; }
+      .onboarding .chat-window { background: linear-gradient(135deg, #4F46E5 0%, #6366F1 100%); }
     </style>
-</head>
-<body>
-<div class="chat-container">
-    <div class="chat-header">
-        <img src="https://via.placeholder.com/40" alt="Logo" style="vertical-align: middle; margin-right: 10px;">
-        AI Chatbot
+  </head>
+  <body class="bg-white">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-white/90 backdrop-blur-sm z-50 border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <a href="#" class="text-2xl font-['Pacifico'] text-primary">B.I.R.D.</a>
+          </div>
+          <div class="hidden md:flex items-center space-x-8">
+            <a href="#features" class="text-gray-700 hover:text-primary">Features</a>
+            <a href="#about" class="text-gray-700 hover:text-primary">About</a>
+            <a href="#solutions" class="text-gray-700 hover:text-primary">Solutions</a>
+            <a href="#contact" class="text-gray-700 hover:text-primary">Contact</a>
+            <button class="px-4 py-2 text-white bg-primary !rounded-button hover:bg-primary/90">Sign In</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-24 pb-16 relative overflow-hidden">
+      <div class="absolute inset-0" style="background-image: url('https://public.readdy.ai/ai/img_res/a7b3fce2e94a13793ff7357e7b807066.jpg'); background-size: cover; opacity: 0.1;"></div>
+      <div class="max-w-7xl mx-auto px-4 relative">
+        <div class="flex flex-col md:flex-row items-center">
+          <div class="md:w-1/2 mb-12 md:mb-0">
+            <h1 class="text-5xl md:text-6xl font-bold mb-6 typing-animation" id="mainHeading">Empowering Startups.<br />Connecting Investors.</h1>
+            <p class="text-xl text-gray-600 mb-8">Transform your business journey with AI-powered matchmaking between innovative startups and visionary investors.</p>
+            <div class="flex space-x-4">
+              <button onclick="startOnboarding('startup')" class="px-6 py-3 bg-primary text-white !rounded-button hover:bg-primary/90 whitespace-nowrap">Start as a Startup</button>
+              <button onclick="startOnboarding('vc')" class="px-6 py-3 border-2 border-primary text-primary !rounded-button hover:bg-primary/10 whitespace-nowrap">Start as a VC</button>
+            </div>
+          </div>
+          <div class="md:w-1/2">
+            <img src="https://public.readdy.ai/ai/img_res/a2a18e79bce8c567b88f8645d1626748.jpg" alt="Hero Image" class="w-full rounded-xl shadow-2xl" />
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-gray-50" id="features">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-16">Why Choose B.I.R.D.?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-6">
+              <i class="ri-ai-generate-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">AI-Powered Matching</h3>
+            <p class="text-gray-600">Smart algorithms analyze your profile and requirements to find the perfect matches.</p>
+          </div>
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-6">
+              <i class="ri-shield-check-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">Verified Profiles</h3>
+            <p class="text-gray-600">All participants undergo thorough verification to ensure trust and reliability.</p>
+          </div>
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-6">
+              <i class="ri-chat-3-line text-primary text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold mb-4">Smart Communication</h3>
+            <p class="text-gray-600">Advanced chat features with built-in translation and scheduling capabilities.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Metrics -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-16">Success Metrics</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold mb-4">Investment Growth</h3>
+            <div id="investmentChart" class="w-full h-80"></div>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold mb-4">Successful Matches</h3>
+            <div id="matchesChart" class="w-full h-80"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-16">Success Stories</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="https://public.readdy.ai/ai/img_res/0f5b9f2559637edc9644c2990019d527.jpg" alt="Sarah Chen" class="w-12 h-12 rounded-full object-cover" />
+              <div class="ml-4">
+                <h4 class="font-bold">Sarah Chen</h4>
+                <p class="text-gray-600 text-sm">Founder, TechVision AI</p>
+              </div>
+            </div>
+            <p class="text-gray-600">"B.I.R.D. helped us secure Series A funding within just 3 months. The AI matching was incredibly accurate!"</p>
+          </div>
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="https://public.readdy.ai/ai/img_res/b42b714daad6f7ff5edf4926bb3b0cae.jpg" alt="Michael Roberts" class="w-12 h-12 rounded-full object-cover" />
+              <div class="ml-4">
+                <h4 class="font-bold">Michael Roberts</h4>
+                <p class="text-gray-600 text-sm">Partner, Venture Capital</p>
+              </div>
+            </div>
+            <p class="text-gray-600">"As a VC, finding quality startups has never been easier. The platform's analytics are top-notch."</p>
+          </div>
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="flex items-center mb-6">
+              <img src="https://public.readdy.ai/ai/img_res/0a0952825fc963ff7d02320190083e3f.jpg" alt="David Zhang" class="w-12 h-12 rounded-full object-cover" />
+              <div class="ml-4">
+                <h4 class="font-bold">David Zhang</h4>
+                <p class="text-gray-600 text-sm">CEO, CloudStack</p>
+              </div>
+            </div>
+            <p class="text-gray-600">"The AI-driven matching system introduced us to investors who truly understood our vision."</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-20 gradient-bg text-white">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-8">Ready to Transform Your Business Journey?</h2>
+        <p class="text-xl mb-12">Join thousands of successful matches on B.I.R.D.</p>
+        <button class="px-8 py-4 bg-white text-primary !rounded-button hover:bg-gray-100">Get Started Now</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-2xl font-['Pacifico'] mb-4">B.I.R.D.</h3>
+            <p class="text-gray-400">Empowering the future of business connections through AI.</p>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4">Company</h4>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white">About</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Press</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4">Resources</h4>
+            <ul class="space-y-2">
+              <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+              <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-bold mb-4">Newsletter</h4>
+            <form class="space-y-4">
+              <input type="email" placeholder="Enter your email" class="w-full px-4 py-2 !rounded-button bg-gray-800 border-none text-white" />
+              <button type="submit" class="w-full px-4 py-2 bg-primary !rounded-button hover:bg-primary/90">Subscribe</button>
+            </form>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+          <p>© 2025 B.I.R.D. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <div id="chatBot" class="fixed bottom-4 right-4 z-50">
+      <button id="chatToggle" class="w-14 h-14 bg-primary !rounded-full flex items-center justify-center text-white shadow-lg hover:bg-primary/90">
+        <i class="ri-message-3-line text-2xl"></i>
+      </button>
+      <div id="chatWindow" class="chat-window absolute bottom-16 right-0 w-96 md:w-[500px] bg-white rounded-xl shadow-2xl overflow-hidden">
+        <div class="p-4 border-b bg-primary text-white">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-8 h-8 bg-white/20 !rounded-full flex items-center justify-center mr-3">
+                <i class="ri-robot-line text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-bold">B.I.R.D. Assistant</h3>
+                <p class="text-sm">AI-powered support</p>
+              </div>
+            </div>
+            <button id="closeChat" class="text-white hover:text-gray-200"><i class="ri-close-line"></i></button>
+          </div>
+        </div>
+        <div id="chatMessages" class="h-96 overflow-y-auto p-4 space-y-4 bg-gray-50"></div>
+        <div class="p-4 border-t">
+          <div class="flex">
+            <input type="text" id="messageInput" placeholder="Type your message..." class="flex-1 px-4 py-2 border !rounded-button mr-2" />
+            <button id="sendMessage" class="px-4 py-2 bg-primary text-white !rounded-button hover:bg-primary/90">
+              <i class="ri-send-plane-line"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="chat-box" class="chat-box"></div>
-    <div class="input-box">
-        <input type="text" id="user-input" placeholder="Type your message...">
-        <button id="send-button">Send</button>
-    </div>
-</div>
-<script>
-    const chatBox = document.getElementById('chat-box');
-    const userInput = document.getElementById('user-input');
-    const sendButton = document.getElementById('send-button');
 
-    function appendMessage(sender, message) {
-        const messageElement = document.createElement('div');
-        messageElement.classList.add('message', sender);
-        messageElement.innerHTML = `<strong>${sender === 'bot' ? 'Bot 🤖' : 'You'}:</strong> ${message}`;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+    <!-- JavaScript -->
+    <script>
+      const startupQuestions = [
+        "What industry is your startup in?",
+        "What stage is your startup at? (e.g., Pre-Seed, Seed, Series A)",
+        "How much funding are you looking to raise? (e.g., 500k)",
+        "What is your current monthly revenue? (e.g., 10k)",
+        "How many team members do you have?",
+        "What is your target market?"
+      ];
+      const vcQuestions = [
+        "What industries do you typically invest in?",
+        "What is your preferred investment stage? (e.g., Seed, Series A)",
+        "What is your typical investment range? (e.g., 100k-1M)",
+        "Do you prefer to lead rounds or co-invest?",
+        "What regions do you focus on?",
+        "What is your investment thesis?"
+      ];
+      let currentQuestionIndex = 0;
+      let currentRole = "";
+      let userAnswers = {};
 
-    function showTypingAnimation() {
-        const typingElement = document.createElement('div');
-        typingElement.id = 'typing';
-        typingElement.classList.add('message', 'bot');
-        typingElement.innerHTML = `<strong>Bot 🤖:</strong> <span class="typing-dots">...</span>`;
-        chatBox.appendChild(typingElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
+      // Chatbot Functions
+      function startOnboarding(role) {
+        currentRole = role;
+        currentQuestionIndex = 0;
+        userAnswers = {};
+        document.querySelectorAll("section, footer").forEach((el) => el.style.display = "none");
+        const chatWindow = document.getElementById("chatWindow");
+        chatWindow.classList.add("active", "onboarding");
+        chatMessages.innerHTML = "";
+        const welcomeMessage = role === "startup" ? "Welcome! Let's gather some info about your startup." : "Welcome! Let's understand your investment preferences.";
+        addMessage(welcomeMessage);
+        setTimeout(() => askNextQuestion(), 1000);
+      }
 
-    function removeTypingAnimation() {
-        const typingElement = document.getElementById('typing');
-        if (typingElement) {
-            chatBox.removeChild(typingElement);
+      function askNextQuestion() {
+        const questions = currentRole === "startup" ? startupQuestions : vcQuestions;
+        if (currentQuestionIndex < questions.length) {
+          addMessage(questions[currentQuestionIndex]);
+        } else {
+          calculateAndDisplayScore();
         }
-    }
+      }
 
-    async function sendMessage() {
-        const userMessage = userInput.value.trim();
-        if (!userMessage) return;
+      function calculateAndDisplayScore() {
+        let score = 0;
+        const answers = Object.values(userAnswers);
 
-        appendMessage('user', userMessage);
-        userInput.value = '';
+        // Scoring logic: Simple heuristic based on answer quality
+        answers.forEach((answer) => {
+          if (answer.length > 15) score += 1; // Detailed answers
+          if (answer.match(/\d+/)) score += 1; // Contains numbers (e.g., funding, revenue, team size)
+          if (answer.toLowerCase().includes("tech") || answer.toLowerCase().includes("growth") || answer.toLowerCase().includes("global")) score += 0.5; // Keywords
+        });
 
-        // Show typing animation
-        showTypingAnimation();
+        // Normalize score to 10 and ensure minimum of 3 for completing all questions
+        score = Math.max(3, Math.min(10, score));
+        addMessage(`Thank you for your responses! Your score is: ${score}/10`);
 
-        // Simulate a delay to represent chatbot "thinking"
-        setTimeout(async () => {
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `message=${encodeURIComponent(userMessage)}`
-            });
+        setTimeout(() => {
+          if (score > 7) {
+            addMessage("Great score! Let's create your account.");
+            showAccountCreationForm();
+          } else {
+            addMessage("Your score is below 7. Please provide more detailed answers to improve it. Click 'Start as a Startup' or 'Start as a VC' to try again.");
+          }
+        }, 1000);
+      }
 
-            const data = await response.json();
+      function showAccountCreationForm() {
+        const formHtml = `
+          <div class="space-y-4">
+            <input type="text" id="fullName" placeholder="Full Name" class="w-full px-4 py-2 border !rounded-button text-black">
+            <input type="email" id="email" placeholder="Email Address" class="w-full px-4 py-2 border !rounded-button text-black">
+            <input type="password" id="password" placeholder="Password" class="w-full px-4 py-2 border !rounded-button text-black">
+            <button onclick="createAccount()" class="w-full px-4 py-2 bg-primary text-white !rounded-button hover:bg-primary/90">Create Account</button>
+          </div>
+        `;
+        addMessage(formHtml);
+      }
 
-            // Remove typing animation before showing the bot's response
-            removeTypingAnimation();
+      function createAccount() {
+        const fullName = document.getElementById("fullName").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-            // Display the chatbot's response
-            appendMessage('bot', data.response);
-        }, 1500); // Delay for 1.5 seconds
-    }
-
-    // Send message on button click
-    sendButton.addEventListener('click', () => {
-        sendMessage();
-    });
-
-    // Send message on pressing "Enter"
-    userInput.addEventListener('keypress', (event) => {
-        if (event.key === 'Enter') {
-            sendMessage();
+        if (!fullName || !email || !password) {
+          addMessage("Please fill in all fields.");
+          return;
         }
-    });
-</script>
-</body>
+
+        // Simulate account creation (no backend yet)
+        localStorage.setItem("user", JSON.stringify({ fullName, email, password, role: currentRole }));
+        addMessage("Account created successfully! Please log in to continue.");
+        setTimeout(() => showLoginPage(), 1000);
+      }
+
+      function showLoginPage() {
+        chatMessages.innerHTML = "";
+        const loginHtml = `
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-white">Login to B.I.R.D.</h3>
+            <input type="email" id="loginEmail" placeholder="Email Address" class="w-full px-4 py-2 border !rounded-button text-black">
+            <input type="password" id="loginPassword" placeholder="Password" class="w-full px-4 py-2 border !rounded-button text-black">
+            <button onclick="login()" class="w-full px-4 py-2 bg-primary text-white !rounded-button hover:bg-primary/90">Login</button>
+          </div>
+        `;
+        addMessage(loginHtml);
+      }
+
+      function login() {
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+        const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+        if (user.email === email && user.password === password) {
+          addMessage(`Welcome back, ${user.fullName}! You're now logged in as a ${user.role}.`);
+          setTimeout(() => {
+            chatWindow.classList.remove("onboarding");
+            addMessage("You can now explore the B.I.R.D. network. Type 'network' to see connections!");
+          }, 1000);
+        } else {
+          addMessage("Invalid email or password. Please try again.");
+        }
+      }
+
+      function addMessage(message, isUser = false) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `flex ${isUser ? "justify-end" : ""}`;
+        messageDiv.innerHTML = `<div class="max-w-[70%] ${isUser ? "bg-primary text-white" : "bg-white"} rounded-xl p-3 shadow">${message}</div>`;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+
+      // Charts
+      const investmentChart = echarts.init(document.getElementById("investmentChart"));
+      const matchesChart = echarts.init(document.getElementById("matchesChart"));
+      const investmentOption = {
+        animation: false, tooltip: { trigger: "axis", backgroundColor: "rgba(255, 255, 255, 0.9)" },
+        xAxis: { type: "category", data: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"] },
+        yAxis: { type: "value" },
+        series: [{ data: [150, 230, 224, 218, 335, 447], type: "line", smooth: true, lineStyle: { color: "rgba(87, 181, 231, 1)" }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: "rgba(87, 181, 231, 0.3)" }, { offset: 1, color: "rgba(87, 181, 231, 0.1)" }]) } }]
+      };
+      const matchesOption = {
+        animation: false, tooltip: { trigger: "item", backgroundColor: "rgba(255, 255, 255, 0.9)" },
+        series: [{ type: "pie", radius: ["40%", "70%"], data: [{ value: 735, name: "Successful" }, { value: 580, name: "In Progress" }, { value: 484, name: "Pending" }], itemStyle: { borderRadius: 10 } }]
+      };
+      investmentChart.setOption(investmentOption);
+      matchesChart.setOption(matchesOption);
+
+      // Event Listeners
+      const chatToggle = document.getElementById("chatToggle");
+      const chatWindow = document.getElementById("chatWindow");
+      const closeChat = document.getElementById("closeChat");
+      const messageInput = document.getElementById("messageInput");
+      const sendMessage = document.getElementById("sendMessage");
+      const chatMessages = document.getElementById("chatMessages");
+
+      chatToggle.addEventListener("click", () => chatWindow.classList.toggle("active"));
+      closeChat.addEventListener("click", () => {
+        chatWindow.classList.remove("active", "onboarding");
+        document.querySelectorAll("section, footer").forEach((el) => el.style.display = "");
+      });
+      sendMessage.addEventListener("click", () => {
+        const message = messageInput.value.trim();
+        if (message) {
+          addMessage(message, true);
+          messageInput.value = "";
+          if (currentRole && currentQuestionIndex < (currentRole === "startup" ? startupQuestions : vcQuestions).length) {
+            userAnswers[currentRole === "startup" ? startupQuestions[currentQuestionIndex] : vcQuestions[currentQuestionIndex]] = message;
+            currentQuestionIndex++;
+            setTimeout(() => askNextQuestion(), 1000);
+          } else if (message.toLowerCase() === "network" && localStorage.getItem("user")) {
+            addMessage("Networking feature coming soon! For now, you’re connected to the B.I.R.D. community.");
+          } else {
+            addMessage("How can I assist you today?");
+          }
+        }
+      });
+      messageInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendMessage.click(); });
+
+      window.addEventListener("load", () => {
+        setTimeout(() => addMessage("Hi! I'm your B.I.R.D. Assistant. Click 'Start as a Startup' or 'Start as a VC' to begin!"), 1000);
+      });
+    </script>
+  </body>
 </html>
